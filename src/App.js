@@ -9,6 +9,7 @@ function App() {
   const API_URL = "http://localhost:3500/items";
 const [items,setItems] =  useState([]);
 const [fetchErrors, setFetchErrors] = useState(null);
+const [isLoading, setIsLoading] = useState(true);
 const handleCheck = (id) => {
   const listItems = items.map((item) => id === item.id ? {...item, checked: !item.checked} : item);
   setItems(listItems);
@@ -23,9 +24,13 @@ useEffect(() => {
       setFetchErrors(null);
     } catch (error) {
       setFetchErrors(error.message);
+    } finally {
+      setIsLoading(false);
     }
   }
-  (async() => fetchItems())();
+  setTimeout(() => {
+    (async() => fetchItems())();
+  },2000)
 }, [])
 
 const handleDelete = (id) => {
@@ -57,8 +62,9 @@ const addItem = (item) => {
       <SearchItem  search={search}
       setSearch = {setSearch}/>
       <main>
-      {fetchErrors && <p style={{color:"red"}}>{`Error: ${fetchErrors}`}</p>} 
-      {!fetchErrors && <Content items = {items.filter(item => (item.item).toLowerCase().includes(search.toLowerCase()))} 
+       {isLoading && !fetchErrors && <p>Loading items......</p>} 
+      {!isLoading && fetchErrors && <p style={{color:"red"}}>{`Error: ${fetchErrors}`}</p>} 
+      {!isLoading && !fetchErrors && <Content items = {items.filter(item => (item.item).toLowerCase().includes(search.toLowerCase()))} 
       setItems= {setItems}
       handleCheck = {handleCheck}
       handleDelete = {handleDelete}
