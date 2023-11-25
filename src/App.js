@@ -6,14 +6,27 @@ import { useState, useEffect } from 'react';
 import SearchItem from './SearchItem';
 
 function App() {
-const [items,setItems] =  useState(JSON.parse(localStorage.getItem("shoppinglist")) || []);
+  const API_URL = "http://localhost:3500/items";
+const [items,setItems] =  useState([]);
+const [fetchErrors, setFetchErrors] = useState(null);
 const handleCheck = (id) => {
   const listItems = items.map((item) => id === item.id ? {...item, checked: !item.checked} : item);
   setItems(listItems);
 }
 useEffect(() => {
-  localStorage.setItem("shoppinglist",JSON.stringify(items));
-}, [items])
+  const fetchItems = async() => {
+    try {
+      const response = await fetch(API_URL);
+      if(!response.ok) throw Error("Did not received expected O/P ......")
+      const listItems = await response.json();
+      setItems(listItems);
+      setFetchErrors(null);
+    } catch (error) {
+      setFetchErrors(error.message);
+    }
+  }
+  (async() => fetchItems())();
+}, [])
 
 const handleDelete = (id) => {
   const itemsFilter = items.filter(item => item.id !== id);
@@ -43,11 +56,14 @@ const addItem = (item) => {
       />
       <SearchItem  search={search}
       setSearch = {setSearch}/>
-      <Content items = {items.filter(item => (item.item).toLowerCase().includes(search.toLowerCase()))} 
+      <main>
+      {fetchErrors && <p style={{color:"red"}}>{`Error: ${fetchErrors}`}</p>} 
+      {!fetchErrors && <Content items = {items.filter(item => (item.item).toLowerCase().includes(search.toLowerCase()))} 
       setItems= {setItems}
       handleCheck = {handleCheck}
       handleDelete = {handleDelete}
-      />
+      />}
+      </main>
       <Footer length={items.length}/>
     </div>
   );
