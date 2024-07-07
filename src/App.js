@@ -7,7 +7,7 @@ import SearchItem from './SearchItem';
 import apiRequest from './apiRequest';
 
 function App() {
-const API_URL = "https://chandra1729ch.github.io/json-server/jsonfile.json/items";
+const API_URL = "https://chandra1729ch.github.io/json-server/db.json/items";
 const [items,setItems] =  useState([]);
 const [fetchErrors, setFetchErrors] = useState(null);
 const [isLoading, setIsLoading] = useState(true);
