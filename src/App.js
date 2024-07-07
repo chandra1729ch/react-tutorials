@@ -7,7 +7,7 @@ import SearchItem from './SearchItem';
 import apiRequest from './apiRequest';
 
 function App() {
-const API_URL = "https://localhost:3500/items";
+const API_URL = "http://localhost:3500/items";
 const [items,setItems] =  useState([]);
 const [fetchErrors, setFetchErrors] = useState(null);
 const [isLoading, setIsLoading] = useState(true);
